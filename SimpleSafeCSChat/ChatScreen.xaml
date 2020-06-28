@@ -1,0 +1,101 @@
+﻿<Window x:Class="SimpleSafeCSChat.ChatScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleSafeCSChat"
+        xmlns:converters="clr-namespace:SimpleSafeCSChat.Converters"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:test="clr-namespace:SimpleSafeCSChat.Test"
+        d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True, Type={x:Type test:TestChatWindowViewModel}}"
+        mc:Ignorable="d"
+        Title="ChatScreen" Height="553" Width="601" MinWidth="570" MinHeight="200">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:BoolToVisibleInvertedConverter x:Key="BoolToVisibleInvertedConverter"/>
+    </Window.Resources>
+    <Grid x:Name="ChatScreenGrid" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" x:Name="TabControlGrid" Margin="10">
+            <Border ClipToBounds="True">
+                <TabControl TabStripPlacement="Left" ItemsSource="{Binding ChatTabs}" SelectedItem="{Binding SelectedChatTab}">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                    <TabControl.ContentTemplate>
+                        <DataTemplate>
+                            <ListBox ItemsSource="{Binding Path=ChatMessages}" HorizontalContentAlignment="Stretch" Margin="1,1,1,1" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled" UseLayoutRounding="False" ClipToBounds="True">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid Grid.Column="0" Visibility="{Binding IsOriginNative, Converter={StaticResource BoolToVisibleInvertedConverter}}" Margin="0,0,-100,0" >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="20"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid Grid.Row="0" ClipToBounds="True">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="150"/>
+                                                        <ColumnDefinition Width="150"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Author}"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding Time}" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                                <TextBlock Grid.Row="1" Text="{Binding Message}" TextWrapping="Wrap" ClipToBounds="True"/>
+                                            </Grid>
+                                            <Grid Grid.Column="1" Visibility="{Binding IsOriginNative, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-100,0,0,0" >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="20"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid Grid.Row="0" ClipToBounds="True" >
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="150"/>
+                                                        <ColumnDefinition Width="150"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Author}"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding Time}" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                                <TextBlock Grid.Row="1" Text="{Binding Message}" TextWrapping="Wrap" ClipToBounds="True"/>
+                                            </Grid>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
+                </TabControl>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="1" x:Name="ToolboxGrid" Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" x:Name="AddDeleteGrid" Margin="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Content="Add chat" Command="{Binding AddChatCommand}"/>
+                <Button Grid.Row="2" Content="Close chat"/>
+            </Grid>
+            <TextBox Grid.Column="1" Margin="10" Text="{Binding SelectedChatTab.NewMessage.Message}">
+
+            </TextBox>
+            <Button Grid.Column="2" Margin="0,10,0,10" Content="Send message" Command="{Binding SendMessageCommand}"/>
+        </Grid>
+    </Grid>
+
+</Window>
